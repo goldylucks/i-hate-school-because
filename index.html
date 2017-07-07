@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>I hate school because</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      h1 {
+        text-align: center;
+        padding: 20px;
+        background: gray;
+        border-bottom: 1px solid gray;
+        margin: 0;
+      }
+      .container {
+        width: 900px;
+        margin: 0 auto;
+      }
+      input {
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 10px;
+        border-radius: 4px;
+        border: grey solid 2px;
+      }
+      textarea {
+        width: 100%;
+        margin-bottom: 20px;
+        height: 150px;
+        padding: 10px;
+        border-radius: 4px;
+        border: grey solid 2px;
+      }
+      button {
+        background: blue;
+        color: white;
+        border: 2px solid blue;
+        padding: 10px 30px;
+        border-radius: 4px;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+      button:hover {
+        background: white;
+        color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>School sucks!</h1>
+    <div class="container">
+      <h2>Welcome friendly school hater! :)</h2>
+      <p>We have gathered here today to celebrate our hate for school. Why do YOU hate school? <br />
+      </p>
+      <input id="new-title" placeholder="I hate school because ..."/>
+      <textarea id="new-description" placeholder="I also want to share ... (optional)"></textarea>
+      <button id="new-button">Let's hate school together!</button>
+    </div>
+    <hr />
+    <div class="container" id="list"></div>
+
+    <script>
+      const buttonElement = el('new-button')
+      buttonElement.addEventListener('click', addHatedItem)
+      window.addEventListener('load', onWindowLoad)
+
+      function onWindowLoad () {
+        fetchHatedList()
+          .then(injectHatedList)
+      }
+
+      function injectHatedList (list) {
+        console.log('list from server', list)
+        list.forEach(item => {
+          const title = document.createElement('h3')
+          title.innerText = item.title
+          el('list').appendChild(title)
+          if (item.description) {
+            const description = document.createElement('p')
+            description.innerText = item.description
+            el('list').appendChild(description)
+          }
+          el('list').appendChild(document.createElement('hr'))
+        })
+      }
+
+      function fetchHatedList () {
+        return fetch('http://localhost:8000/list', { mode: 'cors' })
+          .then(res => {
+            if (!res.ok) {
+              alert('error!')
+              return
+            }
+            return res.json()
+          })
+          .catch(err => alert(err))
+      }
+
+      function addHatedItem () {
+        // get the title
+        // store title in variable
+        const title = el('new-title').value
+        console.log('title:', title)
+
+        // get the description
+        // store description in variable
+        const description = el('new-description').value
+        console.log('description:', description)
+
+        fetch('http://localhost:8000/new', {
+          // mode: 'cors',
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ title, description })
+        })
+        .then(res => {
+          if (!res.ok) {
+            alert('error!')
+            return
+          }
+          return res.json()
+        })
+        .catch(err => alert(err))
+
+        // add item to list with title
+        const newItemElement = document.createElement('div')
+        const newTitleElement = document.createElement('h3')
+        newTitleElement.innerText = title
+        el('list').appendChild(newTitleElement)
+
+        // if there's description, add that to new item
+        const newDescriptionElement = document.createElement('p')
+        newDescriptionElement.innerText = description
+        if (description) {
+          el('list').appendChild(newDescriptionElement)
+        }
+        el('list').appendChild(document.createElement('hr'))
+
+        // reset title
+        el('new-title').value = ''
+
+        // reset description
+        el('new-description').value = ''
+      }
+
+      function el (id) {
+        return document.getElementById(id)
+      }
+    </script>
+  </body>
+</html>
