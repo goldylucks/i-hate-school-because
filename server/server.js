@@ -40,9 +40,9 @@ const server = http.createServer((req, res) => {
       });
       req.on('end', () => {
         try {
-          list = [
-            Object.assign(JSON.parse(body), { likes: 0 }),
-          ].concat(list)
+          list = list.concat(
+            Object.assign(JSON.parse(body), { likes: 0 })
+          )
           res.end(JSON.stringify({ message: 'success! :)' }))
         } catch (err) {
           console.error('error adding item', err)

@@ -1,4 +1,4 @@
-// const BASE_URL = 'https://i-hate-school-because.herokuapp.com/' // production
+// const BASE_URL = 'https://i-hate-school-because.herokuapp.com' // production
 const BASE_URL = 'http://localhost:8000' // local
 const buttonElement = el('new-button')
 buttonElement.addEventListener('click', addHatedItem)
