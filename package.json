@@ -1,9 +1,11 @@
 {
   "scripts": {
+    "start": "nodemon server",
     "deploy:server": "git push heroku master",
     "deploy:client": "surge client i-hate-school-because.surge.sh"
   },
   "devDependencies": {
+    "nodemon": "^1.11.0",
     "surge": "^0.19.0"
   }
 }
